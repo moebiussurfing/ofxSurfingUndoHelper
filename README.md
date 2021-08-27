@@ -3,7 +3,7 @@
 ![Stage: beta](https://img.shields.io/badge/-alpha-red)
 
 ## Overview
-An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://github.com/nariakiiwatani/ofxUndo) from [nariakiiwatani](https://github.com/nariakiiwatani).
+An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://github.com/nariakiiwatani/ofxUndo) from [nariakiiwatani](https://github.com/nariakiiwatani), but simplified to easely use **ofParameters**. 
 
 ## Screenshot
 ![Capture](docs/Capture.PNG?raw=true "Capture")
@@ -11,8 +11,8 @@ An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://gith
 ## Features
 - Controls the **ofParameters** inside an **ofParameterGroup**.
 - Adds **ImGui** controls to improve the workflow.
-- Added Files Mode to allow **persistent Undo History** between App sessions.
-- **Ram Mode** should be faster on big files / too much params scenarios.
+- **Files Mode** to allow **persistent Undo History** between App sessions.
+- **Ram Mode** should be faster on big files / too many params scenarios.
 
 ## Usage
 - Check this example:  
