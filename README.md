@@ -3,7 +3,7 @@
 ![Stage: beta](https://img.shields.io/badge/-alpha-red)
 
 ## Overview
-An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://github.com/nariakiiwatani/ofxUndo) from [nariakiiwatani](https://github.com/nariakiiwatani), but simplified to easely use **ofParameters**. 
+An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://github.com/nariakiiwatani/ofxUndo) from [nariakiiwatani](https://github.com/nariakiiwatani), but simplified to easely use **ofParameters** and with an **ImGui** based **GUI**. 
 
 ## Screenshot
 ![Capture](docs/Capture.PNG?raw=true "Capture")
@@ -14,10 +14,11 @@ An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://gith
 - **Files Mode** to allow **persistent Undo History** between App sessions.
 - **Ram Mode** should be faster on big files / too many params scenarios.
 
-## Usage
+## Example
 - Check this example:  
 https://github.com/moebiussurfing/ofxSurfingRandomizer/tree/master/example-RandomScene
 
+## Usage
 ofApp.h
 ```.cpp
 #include "ofxSurfingUndoHelper.h"
