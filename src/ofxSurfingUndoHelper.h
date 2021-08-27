@@ -8,12 +8,17 @@
 #include "ofxSurfingImGui.h"
 #include "ofxSurfingHelpers.h"
 
+#include "UndoHistory.h"
+
 class ofxSurfingUndoHelper
 {
+
 private:
+	
 	ofxSurfing_ImGui_Manager guiManager;
 
 public:
+	
 	ofxSurfingUndoHelper();
 	~ofxSurfingUndoHelper();
 
@@ -33,23 +38,18 @@ public:
 	}
 
 private:
-	string path_Global;
+
+	string path_Global = "";
 	ofParameterGroup params{ "ofxSurfingUndoHelper" };
 	ofParameterGroup params_AppState{ "ofxSurfingUndoHelper_AppState" };
 
 //--
 
 public:
-	// undo engine
-	// you can manually store all the parameters states to store points
-	// only works on edit mode
-	// then you can browse doing undo/redo to decide what states you like more.
-	// when doing a random, the engine auto stores the states.
-	// currently working automatic only when called by key command (ctrl+R) not when clicking gui "randomize parameters"
-	// when called using gui button, you must store states manually (ctrl+s)
 
 	ofParameter<bool> bGui_UndoEngine{ "Undo Engine", false };
-	ofParameter<bool> bUndoAuto{ "Undo Auto", false };
+	ofParameter<bool> bUndoAuto{ "Undo Auto", true };
+	ofParameter<bool> bFilesMode{ "Files Mode", false };
 
 	void doStoreUndo();// store current point to undo history
 	void doStoreUndoWhenAuto() {
@@ -57,9 +57,12 @@ public:
 	}; // store current point to undo history when auto mode is enabled
 
 private:
+
 	string path_UndoHistory;
 	string path_AppState;
-	ofxUndoSimple <std::string> undoStringsParams;
+
+	ofxUndoSimple <std::string> undo_StringParams;
+	
 	ofXml undoXmlsParams;
 
 	void doRefreshUndoParams();
@@ -70,12 +73,24 @@ private:
 
 	ofParameter<bool> bKeys{ "Keys", true };
 
+	void exit();
+
 public:
-	//TODO: sqave/load history
+
+	void keyPressed(ofKeyEventArgs &eventArgs);
+
+//public:
+private:
+
+	//TODO: save/load history
 	void loadUndoHist();
 	void saveUndoHist();
 
-	void keyPressed(ofKeyEventArgs &eventArgs);
-	void exit();
+private:
+
+	//TODO: 
+	//files mode
+	//save/load history
+	UndoHistory undo_StringParamsFiles;
 
 };

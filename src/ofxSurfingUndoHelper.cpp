@@ -1,7 +1,5 @@
+
 #include "ofxSurfingUndoHelper.h"
-
-
-//----
 
 //--------------------------------------------------------------
 ofxSurfingUndoHelper::ofxSurfingUndoHelper() {
@@ -15,11 +13,12 @@ ofxSurfingUndoHelper::~ofxSurfingUndoHelper() {
 //--------------------------------------------------------------
 void ofxSurfingUndoHelper::setup(ofParameterGroup &g) {
 	params = g;
-	path_UndoHistory = path_Global + "ofxSurfingUndoHelper_UndoHistory.xml";
-	path_AppState = path_Global + "ofxSurfingUndoHelper_AppSession.json";
+	path_UndoHistory = path_Global + "SurfingUndoHelper_UndoHistory.xml"; // -> TODO:
+	path_AppState = path_Global + "SurfingUndoHelper_AppSession.json";
 
 	params_AppState.add(bGui_UndoEngine);
 	params_AppState.add(bUndoAuto);
+	params_AppState.add(bFilesMode);
 	params_AppState.add(bKeys);
 
 	//--
@@ -32,6 +31,13 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup &g) {
 	guiManager.setup(IM_GUI_MODE_NOT_INSTANTIATED);
 
 	ofxSurfingHelpers::loadGroup(params_AppState, path_AppState);
+
+	//-
+
+	//TODO:
+	//files
+	undo_StringParamsFiles.setDirectory(path_Global + "UndoHistory_Log");
+	undo_StringParamsFiles.redo(undo_StringParamsFiles.getRedoLength());
 }
 
 //--------------------------------------------------------------
@@ -39,11 +45,15 @@ void ofxSurfingUndoHelper::setupUndo() {
 	// TODO: main group only
 	//undoStringParams = groups[0].toString();
 
-	undoStringsParams.clear();
+	undo_StringParams.clear();
+
+	//TODO:
+	//files
+	undo_StringParamsFiles.clear();
 
 	undoXmlsParams.clear();
 
-	undoStringsParams = params.toString();
+	undo_StringParams = params.toString();
 }
 
 //--------------------------------------------------------------
@@ -54,12 +64,29 @@ void ofxSurfingUndoHelper::doStoreUndo() {
 		ofParameterGroup _group = params;
 		ofSerialize(undoXmlsParams, _group);// fill the xml with the ofParameterGroup
 
-		undoStringsParams = (undoXmlsParams.toString());// fill the ofxUndoSimple with the xml as string
-		undoStringsParams.store();
+		std::string str;
 
-		std::string str = "";
-		str += "UNDO HISTORY: " + ofToString(undoStringsParams.getUndoLength()) + "/";
-		str += ofToString(undoStringsParams.getRedoLength());
+		if (!bFilesMode) {
+			undo_StringParams = undoXmlsParams.toString();// fill the ofxUndoSimple with the xml as string
+			undo_StringParams.store();
+
+			str = "UNDO HISTORY: " + ofToString(undo_StringParams.getUndoLength()) + "/";
+			str += ofToString(undo_StringParams.getRedoLength());
+		}
+
+		if (bFilesMode) {
+			//TODO:
+			//using files
+			(std::string&)undo_StringParamsFiles = undoXmlsParams.toString();
+			//undo_StringParamsFiles.clearRedo();
+			undo_StringParamsFiles.store();
+
+			str = "UNDO HISTORY: " + ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
+			str += ofToString(undo_StringParamsFiles.getRedoLength());
+		}
+
+		//-
+
 		//str += "\n";
 		//str += "DESCRIPTOR\n";
 		//str += undoStringParams.getUndoStateDescriptor() + "\n";
@@ -71,23 +98,40 @@ void ofxSurfingUndoHelper::doStoreUndo() {
 //--------------------------------------------------------------
 void ofxSurfingUndoHelper::doClearUndoHistory() {
 	ofLogNotice(__FUNCTION__) << "UNDO CLEAR";
-	undoStringsParams.clear();
-	//undoStringParams.clear();
+
+	if (!bFilesMode) undo_StringParams.clear();
+
+	if (bFilesMode) {
+		undo_StringParamsFiles.clearRedo();
+
+		undo_StringParamsFiles.clearRemoveFiles();
+		undo_StringParamsFiles.clear();
+	}
 }
 
 //--------------------------------------------------------------
 void ofxSurfingUndoHelper::doUndo() {
 	ofLogNotice(__FUNCTION__) << "UNDO < Group " << params.getName();
-	undoStringsParams.undo();
-	//undoStringParams.undo();
+
+	if (!bFilesMode) undo_StringParams.undo();
+
+	//TODO:
+	//files
+	if (bFilesMode) undo_StringParamsFiles.undo();
+
 	doRefreshUndoParams();
 }
 
 //--------------------------------------------------------------
 void ofxSurfingUndoHelper::doRedo() {
 	ofLogNotice(__FUNCTION__) << "REDO < Group " << params.getName();
-	undoStringsParams.redo();
-	//undoStringParams.redo();
+
+	if (!bFilesMode) undo_StringParams.redo();
+
+	//TODO:
+	//files
+	if (bFilesMode) undo_StringParamsFiles.redo();
+
 	doRefreshUndoParams();
 }
 
@@ -95,14 +139,17 @@ void ofxSurfingUndoHelper::doRedo() {
 void ofxSurfingUndoHelper::doRefreshUndoParams() {
 	{
 		undoXmlsParams.clear();
-		undoXmlsParams.parse(undoStringsParams);// fill the xml with the string 
+
+		if (!bFilesMode) undoXmlsParams.parse(undo_StringParams); // fill the xml with the string 
+		else if (bFilesMode) undoXmlsParams.parse((std::string&)undo_StringParamsFiles); // fill the xml with the string 
 
 		ofParameterGroup _group = params;
 		ofDeserialize(undoXmlsParams, _group);// load the ofParameterGroup
 
-		std::string str = "";
-		str += "UNDO HISTORY: " + ofToString(undoStringsParams.getUndoLength()) + "/";
-		str += ofToString(undoStringsParams.getRedoLength());
+		std::string str;
+		str = "UNDO HISTORY: " + ofToString(undo_StringParams.getUndoLength()) + "/";
+		str += ofToString(undo_StringParams.getRedoLength());
+
 		//str += "\n";
 		//str += "DESCRIPTOR\n";
 		//str += undoStringParams.getUndoStateDescriptor() + "\n";
@@ -132,10 +179,7 @@ void ofxSurfingUndoHelper::drawImGui() {
 		float _h;
 
 		_flagsw = ImGuiWindowFlags_None;
-
-#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-		if (guiManager.bGui) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
-#endif
+		_flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 		guiManager.beginWindow(bGui_UndoEngine, _flagsw);
 		{
@@ -170,9 +214,22 @@ void ofxSurfingUndoHelper::drawImGui() {
 				ImGui::Spacing();
 
 				string str;
-				str = "History: " + ofToString(undoStringsParams.getUndoLength()) + "/";
-				str += ofToString(undoStringsParams.getRedoLength());
+				str = "Group: " + params.getName();
 				ImGui::Text(str.c_str());
+
+				if (!bFilesMode) {
+					str = "History: " + ofToString(undo_StringParams.getUndoLength()) + "/";
+					str += ofToString(undo_StringParams.getRedoLength());
+				}
+				if (bFilesMode) {
+					str = "History: " + ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
+					str += ofToString(undo_StringParamsFiles.getRedoLength());
+				}
+				ImGui::Text(str.c_str());
+
+				string label = (bFilesMode.get() ? "Files Mode" : "RAM Mode");
+				ofxImGuiSurfing::ToggleRoundedButton(label.c_str(), (bool*)&bFilesMode.get());
+				//ofxImGuiSurfing::AddToggleRoundedButton(bFilesMode);
 
 				ofxImGuiSurfing::AddToggleRoundedButton(bKeys);
 			}
@@ -181,13 +238,18 @@ void ofxSurfingUndoHelper::drawImGui() {
 	}
 }
 
+//----
+
+//TODO:
+//store session files
+
 //--------------------------------------------------------------
 void ofxSurfingUndoHelper::loadUndoHist() {
-	//undoStringsParams.clear();
+	//undo_StringParams.clear();
 	//undoXmlsParams.clear();
-	//undoStringsParams = params.toString();
+	//undo_StringParams = params.toString();
 
-	//undoStringsParams
+	//undo_StringParams
 	//doRefreshUndoParams();
 }
 
@@ -197,14 +259,20 @@ void ofxSurfingUndoHelper::saveUndoHist() {
 	//ofxSurfingHelpers::saveGroup();
 
 	//TODO:
-	string s = undoStringsParams;
-	//auto s = undoStringsParams.toString();
+	string s = undo_StringParams;
+	//auto s = undo_StringParams.toString();
 	//auto s = undoXmlsParams.toString();
 	ofLogNotice(__FUNCTION__) << s;
 
 	ofxSurfingHelpers::TextToFile(path_UndoHistory, s, false);
+
+	//-
+
+	//undo_StringParamsFiles.();
+	//undo_StringParamsFiles.store();
 }
 
+//--
 
 //--------------------------------------------------------------
 void ofxSurfingUndoHelper::keyPressed(ofKeyEventArgs &eventArgs) {
@@ -217,7 +285,7 @@ void ofxSurfingUndoHelper::keyPressed(ofKeyEventArgs &eventArgs) {
 	bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
 	bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
 	bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
-	
+
 	ofLogNotice(__FUNCTION__) << " : " << key;
 
 	if (bGui_UndoEngine.get())

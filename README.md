@@ -11,6 +11,8 @@ An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://gith
 ## Features
 - Controls the **ofParameters** inside an **ofParameterGroup**.
 - Adds **ImGui** controls to improve the workflow.
+- Added Files Mode to allow **persistent Undo History** between App sessions.
+- **Ram Mode** should be faster on big files / too much params scenarios.
 
 ## Usage
 - Check this example:  
@@ -75,5 +77,4 @@ An add-on by **@moebiusSurfing**
 
 ## TODO
 + Add compatibility with the original ofxImGui to avoid ofxImGuiSurfing.
-+ Store and recall the app session Undo History.
 + Allow multiple independent groups.
