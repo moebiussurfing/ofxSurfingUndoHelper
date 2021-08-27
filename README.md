@@ -35,7 +35,6 @@ void ofApp::setup()
     params.add(..) // -> add params
 
     undoManager.setup(params);
-    undoManager.drawImGui();
 
     guiManager.setup();
 }
