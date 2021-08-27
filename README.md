@@ -23,6 +23,7 @@ ofApp.h
 
 ofxSurfingUndoHelper undoManager;
 ofxSurfing_ImGui_Manager guiManager;
+
 ofParameterGroup params {"Params"};
 
 ```
