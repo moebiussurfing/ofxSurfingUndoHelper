@@ -52,6 +52,9 @@ public:
 	ofParameter<bool> bUndoAuto{ "Undo Auto", false };
 
 	void doStoreUndo();// store current point to undo history
+	void doStoreUndoWhenAuto() {
+		if (bUndoAuto) doStoreUndo();
+	}; // store current point to undo history when auto mode is enabled
 
 private:
 	string path_UndoHistory;

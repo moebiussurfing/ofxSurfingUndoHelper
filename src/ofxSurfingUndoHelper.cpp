@@ -9,6 +9,7 @@ ofxSurfingUndoHelper::ofxSurfingUndoHelper() {
 
 //--------------------------------------------------------------
 ofxSurfingUndoHelper::~ofxSurfingUndoHelper() {
+	exit();
 }
 
 //--------------------------------------------------------------
