@@ -6,7 +6,7 @@
 An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://github.com/nariakiiwatani/ofxUndo) from [nariakiiwatani](https://github.com/nariakiiwatani), but simplified to easely use **ofParameters** and with an **ImGui** based **GUI**. 
 
 ## Screenshot
-![Capture](docs/Capture.PNG?raw=true "Capture")
+![Screenshot](docs/Capture.PNG?raw=true "Screenshot")
 
 ## Features
 - Controls the **ofParameters** inside an **ofParameterGroup**.
