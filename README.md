@@ -21,7 +21,7 @@ ofApp.h
 #include "ofxSurfingUndoHelper.h"
 #include "ofxSurfingImGui.h"
 
-ofxSurfingUndoHelper undoManger;
+ofxSurfingUndoHelper undoManager;
 ofxSurfing_ImGui_Manager guiManager;
 ofParameterGroup params {"Params"};
 
@@ -33,8 +33,8 @@ void ofApp::setup()
 {
     params.add(..) // -> add params
 
-    undoManger.setup(params);
-    undoManger.drawImGui();
+    undoManager.setup(params);
+    undoManager.drawImGui();
 
     guiManager.setup();
 }
@@ -43,7 +43,7 @@ void ofApp::draw()
 {
     guiManager.beginWindow();
     {
-        undoManger.drawImGui();
+        undoManager.drawImGui();
     }
     guiManager.endWindow();
 }
@@ -51,8 +51,8 @@ void ofApp::draw()
 void ofApp::keyPressed(int key)
 {
     if (key == 's'){
-        undoManger.doStoreUndo(); // -> Force store params current state
-        //undoManger.doStoreUndoWhenAuto(); // -> Stores params state but if auto mode is enabled by GUI. 
+        undoManager.doStoreUndo(); // -> Force store params current state
+        //undoManager.doStoreUndoWhenAuto(); // -> Stores params state but if auto mode is enabled by GUI. 
     }
 }
 ```
