@@ -72,3 +72,7 @@ An add-on by **@moebiusSurfing**
 
 ## License
 [**MIT License**](https://github.com/LICENSE)
+
+## TODO
++ Add compatibility with the original ofxImGui to avoid ofxImGuiSurfing.
++ Store and recall the app session Undo History.
