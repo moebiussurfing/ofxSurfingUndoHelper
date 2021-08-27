@@ -152,7 +152,6 @@ void ofxSurfingUndoHelper::doRefreshUndoParams() {
 			str = "UNDO HISTORY: " + ofToString(undo_StringParams.getUndoLength()) + "/";
 			str += ofToString(undo_StringParams.getRedoLength());
 		}
-		
 		if (bFilesMode) {
 			str = "History: " + ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
 			str += ofToString(undo_StringParamsFiles.getRedoLength());
@@ -210,6 +209,7 @@ void ofxSurfingUndoHelper::drawImGui() {
 				}
 				//ImGui::SameLine();
 
+				ImGui::PushButtonRepeat(true);
 				if (ImGui::Button("< Undo", ImVec2(_w50, _h)))
 				{
 					doUndo();
@@ -219,6 +219,8 @@ void ofxSurfingUndoHelper::drawImGui() {
 				{
 					doRedo();
 				}
+				ImGui::PopButtonRepeat();
+
 				ImGui::Spacing();
 
 				string str;
