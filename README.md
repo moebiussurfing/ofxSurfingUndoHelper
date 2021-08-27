@@ -29,7 +29,8 @@ ofParameterGroup params {"Params"};
 
 ofApp.cpp
 ```.cpp
-void ofApp::setup(){
+void ofApp::setup()
+{
     params.add(..) // -> add params
 
     undoManger.setup(params);
@@ -38,15 +39,17 @@ void ofApp::setup(){
     guiManager.setup();
 }
 
-void ofApp::draw(){
-	guiManager.beginWindow();
-	{
+void ofApp::draw()
+{
+    guiManager.beginWindow();
+    {
         undoManger.drawImGui();
-	}
+    }
     guiManager.endWindow();
 }
 
-void ofApp::keyPressed(int key){
+void ofApp::keyPressed(int key)
+{
     if (key == 's'){
         undoManger.doStoreUndo(); // -> Force store params current state
         //undoManger.doStoreUndoWhenAuto(); // -> Stores params state but if auto mode is enabled by GUI. 
