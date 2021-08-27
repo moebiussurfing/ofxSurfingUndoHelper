@@ -77,3 +77,4 @@ An add-on by **@moebiusSurfing**
 ## TODO
 + Add compatibility with the original ofxImGui to avoid ofxImGuiSurfing.
 + Store and recall the app session Undo History.
++ Allow multiple independent groups.
