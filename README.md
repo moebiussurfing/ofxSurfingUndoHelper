@@ -13,6 +13,11 @@ An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://gith
 - Adds **ImGui** controls to improve the workflow.
 - **Files Mode** to allow **persistent Undo History** between App sessions.
 - **Ram Mode** should be faster on big files / too many params scenarios.
+- Key Commands:  
+  * Undo: ```Ctrl``` + ```z```  
+  * Redo: ```Ctrl``` + ```Shift``` + ```z```  
+  * Clear: ```Ctrl``` + ```Shift``` + ```c```  
+  * Store: ```Ctrl``` + ```s```  
 
 ## Example
 - Check this example:  
