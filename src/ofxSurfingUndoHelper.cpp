@@ -17,7 +17,7 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup &g) {
 	path_AppState = path_Global + "SurfingUndoHelper_AppSession.json";
 
 	params_AppState.add(bGui_UndoEngine);
-	params_AppState.add(bUndoAuto);
+	params_AppState.add(bAutoStore);
 	params_AppState.add(bFilesMode);
 	params_AppState.add(bKeys);
 
@@ -147,8 +147,16 @@ void ofxSurfingUndoHelper::doRefreshUndoParams() {
 		ofDeserialize(undoXmlsParams, _group);// load the ofParameterGroup
 
 		std::string str;
-		str = "UNDO HISTORY: " + ofToString(undo_StringParams.getUndoLength()) + "/";
-		str += ofToString(undo_StringParams.getRedoLength());
+		
+		if (!bFilesMode) {
+			str = "UNDO HISTORY: " + ofToString(undo_StringParams.getUndoLength()) + "/";
+			str += ofToString(undo_StringParams.getRedoLength());
+		}
+		
+		if (bFilesMode) {
+			str = "History: " + ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
+			str += ofToString(undo_StringParamsFiles.getRedoLength());
+		}
 
 		//str += "\n";
 		//str += "DESCRIPTOR\n";
@@ -189,7 +197,7 @@ void ofxSurfingUndoHelper::drawImGui() {
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 				_h *= 2;
 
-				ofxImGuiSurfing::AddBigToggle(bUndoAuto);
+				ofxImGuiSurfing::AddBigToggle(bAutoStore);
 
 				if (ImGui::Button("Store", ImVec2(_w50, _h)))
 				{

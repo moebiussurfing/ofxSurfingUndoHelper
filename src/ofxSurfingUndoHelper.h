@@ -48,12 +48,12 @@ private:
 public:
 
 	ofParameter<bool> bGui_UndoEngine{ "Undo Engine", false };
-	ofParameter<bool> bUndoAuto{ "Undo Auto", true };
+	ofParameter<bool> bAutoStore{ "Auto Store", true };
 	ofParameter<bool> bFilesMode{ "Files Mode", false };
 
 	void doStoreUndo();// store current point to undo history
 	void doStoreUndoWhenAuto() {
-		if (bUndoAuto) doStoreUndo();
+		if (bAutoStore) doStoreUndo();
 	}; // store current point to undo history when auto mode is enabled
 
 private:
