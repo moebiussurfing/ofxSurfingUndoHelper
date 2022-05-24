@@ -21,7 +21,7 @@ An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://gith
 
 ## Example
 - Check this example:  
-https://github.com/moebiussurfing/ofxSurfingRandomizer/tree/master/example-RandomScene
+https://github.com/moebiussurfing/ofxSurfingRandomizer/tree/master/examples/3-RandomSceneUndo
 
 ## Usage
 ofApp.h
