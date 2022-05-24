@@ -66,10 +66,11 @@ void ofApp::keyPressed(int key)
 ```
 
 ## Dependencies
-* [ofxUndo](https://github.com/moebiussurfing/ofxUndo)  
 * [ofxImGui](https://github.com/Daandelange/ofxImGui/). Fork from @**Daandelange**.  
 * [ofxImGuiSurfing](https://github.com/moebiussurfing/ofxImGuiSurfing/) [WIP] 
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
+
+* [ofxUndo](https://github.com/moebiussurfing/ofxUndo) Already added to `/libs`.    
 
 ## Tested Systems
 * **Windows 10** / **VS 2017** / **OF ~0.11**
@@ -82,5 +83,4 @@ An add-on by **@moebiusSurfing**
 [**MIT License**](https://github.com/LICENSE)
 
 ## TODO
-+ Add compatibility with the original ofxImGui to avoid ofxImGuiSurfing.
 + Allow multiple independent groups.
