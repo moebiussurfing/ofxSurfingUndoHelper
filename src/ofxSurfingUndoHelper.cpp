@@ -3,6 +3,19 @@
 
 //--------------------------------------------------------------
 ofxSurfingUndoHelper::ofxSurfingUndoHelper() {
+
+	helpInfo = "";
+	helpInfo += "HELP         \n";
+	helpInfo += "UNDO HELPER  \n";
+	helpInfo += "             \n";
+	helpInfo += "KEY COMMANDS \n";
+	helpInfo += "\n";
+	helpInfo += "CTRL + Z         : UNDO  \n";
+	helpInfo += "CTRL + SHIFT + Z : REDO  \n";
+	helpInfo += "CTRL + SHIFT + C : CLEAR \n";
+	helpInfo += "CTRL + S         : STORE \n";
+	helpInfo += "\n";
+	helpInfo += "AUTO STORE " + ofToString(bAutoStore ? "TRUE" : "FALSE") + "\n";
 }
 
 //--------------------------------------------------------------
@@ -11,7 +24,7 @@ ofxSurfingUndoHelper::~ofxSurfingUndoHelper() {
 }
 
 //--------------------------------------------------------------
-void ofxSurfingUndoHelper::setup(ofParameterGroup &g) {
+void ofxSurfingUndoHelper::setup(ofParameterGroup& g) {
 	params = g;
 	path_UndoHistory = path_Global + "SurfingUndoHelper_UndoHistory.xml"; // -> TODO:
 	path_AppState = path_Global + "SurfingUndoHelper_AppSession.json";
@@ -147,7 +160,7 @@ void ofxSurfingUndoHelper::doRefreshUndoParams() {
 		ofDeserialize(undoXmlsParams, _group);// load the ofParameterGroup
 
 		std::string str;
-		
+
 		if (!bFilesMode) {
 			str = "UNDO HISTORY: " + ofToString(undo_StringParams.getUndoLength()) + "/";
 			str += ofToString(undo_StringParams.getRedoLength());
@@ -285,7 +298,7 @@ void ofxSurfingUndoHelper::saveUndoHist() {
 //--
 
 //--------------------------------------------------------------
-void ofxSurfingUndoHelper::keyPressed(ofKeyEventArgs &eventArgs) {
+void ofxSurfingUndoHelper::keyPressed(ofKeyEventArgs& eventArgs) {
 	if (!bKeys) return;
 
 	const int key = eventArgs.key;

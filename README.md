@@ -1,12 +1,11 @@
 # ofxSurfingUndoHelper
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Stage: beta](https://img.shields.io/badge/-alpha-red)
 
 ## Overview
 An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://github.com/nariakiiwatani/ofxUndo) from [nariakiiwatani](https://github.com/nariakiiwatani), but simplified to easely use **ofParameters** and with an **ImGui** based **GUI**. 
 
 ## Screenshot
-![Screenshot](docs/Capture.PNG?raw=true "Screenshot")
+![Screenshot](readme_images/Capture.PNG?raw=true "Screenshot")
 
 ## Features
 - Controls the **ofParameters** inside an **ofParameterGroup**.
@@ -32,7 +31,7 @@ ofApp.h
 ofxSurfingUndoHelper undoManager;
 ofxSurfing_ImGui_Manager guiManager;
 
-ofParameterGroup params {"Params"};
+ofParameterGroup params;
 
 ```
 
@@ -58,26 +57,24 @@ void ofApp::draw()
 
 void ofApp::keyPressed(int key)
 {
-    if (key == 's'){
-        undoManager.doStoreUndo(); // -> Force store params current state
-        //undoManager.doStoreUndoWhenAuto(); // -> Stores params state but if auto mode is enabled by GUI. 
-    }
+    if (key == 's') undoManager.doStoreUndo(); 
 }
 ```
 
 ## Dependencies
-* [ofxImGui](https://github.com/Daandelange/ofxImGui/). Fork from @**Daandelange**.  
-* [ofxImGuiSurfing](https://github.com/moebiussurfing/ofxImGuiSurfing/) [WIP] 
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
+* [ofxImGuiSurfing](https://github.com/moebiussurfing/ofxImGuiSurfing/) [WIP] 
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/). Fork from @**Daandelange**.  
 
-* [ofxUndo](https://github.com/moebiussurfing/ofxUndo) Already added to `/libs`.    
+* [ofxUndo](https://github.com/moebiussurfing/ofxUndo) Already added to `/libs`. No need to add into **PROJECT GENERATOR**.    
 
 ## Tested Systems
 * **Windows 10** / **VS 2017** / **OF ~0.11**
+* **Windows 10** / **VS 2022** / **oF ~0.12**
 
 ## Author
 An add-on by **@moebiusSurfing**  
-*( ManuMolina ) 2021*  
+*( ManuMolina ) 2021-2022*  
 
 ## License
 [**MIT License**](https://github.com/LICENSE)

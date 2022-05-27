@@ -78,6 +78,8 @@ private:
 public:
 
 	void keyPressed(ofKeyEventArgs &eventArgs);
+	
+	string helpInfo;
 
 //public:
 private:
