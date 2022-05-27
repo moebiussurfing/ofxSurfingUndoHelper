@@ -18,11 +18,9 @@ An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://gith
   * Clear: ```Ctrl``` + ```Shift``` + ```c```  
   * Store: ```Ctrl``` + ```s```  
 
-## Example
-- Check this example:  
-https://github.com/moebiussurfing/ofxSurfingRandomizer/tree/master/examples/3-RandomSceneUndo
-
 ## Usage
+- Check the example.
+  
 ofApp.h
 ```.cpp
 #include "ofxSurfingUndoHelper.h"
