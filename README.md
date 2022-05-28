@@ -5,18 +5,21 @@
 An add-on helper to integrate an **Undo Engine** based on [ofxUndo](https://github.com/nariakiiwatani/ofxUndo) from [nariakiiwatani](https://github.com/nariakiiwatani), but simplified to easely use **ofParameters** and with an **ImGui** based **GUI**. 
 
 ## Screenshot
-![Screenshot](readme_images/Capture.PNG?raw=true "Screenshot")
+![](readme_images/Capture.PNG)
 
 ## Features
 - Controls the **ofParameters** inside an **ofParameterGroup**.
 - Adds **ImGui** controls to improve the workflow.
 - **Files Mode** to allow **persistent Undo History** between App sessions.
-- **Ram Mode** should be faster on big files / too many params scenarios.
+- **Ram Mode** should be faster on big files / too many params scenarios.  
+
 - Key Commands:  
-  * Undo: ```Ctrl``` + ```z```  
-  * Redo: ```Ctrl``` + ```Shift``` + ```z```  
-  * Clear: ```Ctrl``` + ```Shift``` + ```c```  
-  * Store: ```Ctrl``` + ```s```  
+ENTER            : SAVE UNDO  
+CTRL + Z         : UNDO  
+CTRL + SHIFT + Z : REDO  
+CTRL + C         : CLEAR HISTORY  
+CTRL + S         : STATE STORE  
+CTRL + R         : STATE RECALL  
 
 ## Usage
 - Check the example.
@@ -64,7 +67,7 @@ void ofApp::keyPressed(int key)
 * [ofxImGuiSurfing](https://github.com/moebiussurfing/ofxImGuiSurfing/) [WIP] 
 * [ofxImGui](https://github.com/Daandelange/ofxImGui/). Fork from @**Daandelange**.  
 
-* [ofxUndo](https://github.com/moebiussurfing/ofxUndo) Already added to `/libs`. No need to add into **PROJECT GENERATOR**.    
+* [ofxUndo](https://github.com/moebiussurfing/ofxUndo) Already added to `OFX_ADDON/libs/`. No need to add into **PROJECT GENERATOR**.    
 
 ## Tested Systems
 * **Windows 10** / **VS 2017** / **OF ~0.11**
@@ -79,3 +82,4 @@ An add-on by **@moebiusSurfing**
 
 ## TODO
 + Allow multiple independent groups.
++ Add Lite version without **ImGui** but **ofxGui** instead.

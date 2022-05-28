@@ -5,17 +5,21 @@
 ofxSurfingUndoHelper::ofxSurfingUndoHelper() {
 
 	helpInfo = "";
-	helpInfo += "HELP         \n";
-	helpInfo += "UNDO HELPER  \n";
-	helpInfo += "             \n";
+	helpInfo += "HELP \n";
+	helpInfo += "UNDO HELPER \n";
+	helpInfo += " \n";
 	helpInfo += "KEY COMMANDS \n";
+	helpInfo += "\n";
+	helpInfo += "AUTO STORE " + ofToString(bAutoStore ? "TRUE" : "FALSE") + " \n";
+	helpInfo += "ENTER            : SAVE UNDO \n";
+	//helpInfo += "CTRL + ENTER     : SAVE UNDO IF AUTO\n";
 	helpInfo += "\n";
 	helpInfo += "CTRL + Z         : UNDO  \n";
 	helpInfo += "CTRL + SHIFT + Z : REDO  \n";
-	helpInfo += "CTRL + SHIFT + C : CLEAR \n";
-	helpInfo += "CTRL + S         : STORE \n";
+	helpInfo += "CTRL + C         : CLEAR HISTORY \n";
 	helpInfo += "\n";
-	helpInfo += "AUTO STORE " + ofToString(bAutoStore ? "TRUE" : "FALSE") + "\n";
+	helpInfo += "CTRL + S         : STATE STORE \n";
+	helpInfo += "CTRL + R         : STATE RECALL \n";
 }
 
 //--------------------------------------------------------------
@@ -26,13 +30,16 @@ ofxSurfingUndoHelper::~ofxSurfingUndoHelper() {
 //--------------------------------------------------------------
 void ofxSurfingUndoHelper::setup(ofParameterGroup& g) {
 	params = g;
-	path_UndoHistory = path_Global + "SurfingUndoHelper_UndoHistory.xml"; // -> TODO:
-	path_AppState = path_Global + "SurfingUndoHelper_AppSession.json";
+	path_UndoHistory = path_Global + "UndoHelper_UndoHistory.xml"; // -> TODO:
+	path_AppState = path_Global + "UndoHelper_AppSession.json";
+	path_MemoryState = path_Global + "UndoHelper_MemoryState.json";
 
 	params_AppState.add(bGui_UndoEngine);
 	params_AppState.add(bAutoStore);
 	params_AppState.add(bFilesMode);
-	params_AppState.add(bKeys);
+	params_AppState.add(guiManager.bKeys);
+
+	bKeys.makeReferenceTo(guiManager.bKeys);
 
 	//--
 
@@ -49,7 +56,7 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup& g) {
 
 	//TODO:
 	//files
-	undo_StringParamsFiles.setDirectory(path_Global + "UndoHistory_Log");
+	undo_StringParamsFiles.setDirectory(path_Global + "UndoHelper_History_Log");
 	undo_StringParamsFiles.redo(undo_StringParamsFiles.getRedoLength());
 }
 
@@ -70,7 +77,7 @@ void ofxSurfingUndoHelper::setupUndo() {
 }
 
 //--------------------------------------------------------------
-void ofxSurfingUndoHelper::doStoreUndo() {
+void ofxSurfingUndoHelper::doSaveUndo() {
 	{
 		undoXmlsParams.clear();
 
@@ -201,63 +208,96 @@ void ofxSurfingUndoHelper::drawImGui() {
 		_flagsw = ImGuiWindowFlags_None;
 		_flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
-		guiManager.beginWindow(bGui_UndoEngine, _flagsw);
-		{
-			//ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
-			//if (ImGui::CollapsingHeader("UNDO ENGINE"))
+		IMGUI_SUGAR__WINDOWS_CONSTRAINTS
+
+			if (guiManager.beginWindow(bGui_UndoEngine, _flagsw))
 			{
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 				_h *= 2;
 
-				ofxImGuiSurfing::AddBigToggle(bAutoStore);
+				guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_ROUNDED);
+				guiManager.AddSpacingBig();
 
-				if (ImGui::Button("Store", ImVec2(_w50, _h)))
+				if (!guiManager.bMinimize) {
+					guiManager.Add(bAutoStore, OFX_IM_TOGGLE_BORDER_BLINK);
+					guiManager.AddSpacing();
+				}
+
+				if (ImGui::Button("Save", ImVec2(_w50, _h * 0.5f)))
 				{
-					doStoreUndo();
+					doSaveUndo();
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("Clear", ImVec2(_w50, _h)))
+				if (ImGui::Button("Clear", ImVec2(_w50, _h * 0.5f)))
 				{
 					doClearUndoHistory();
 				}
-				//ImGui::SameLine();
+
+				guiManager.AddSpacing();
 
 				ImGui::PushButtonRepeat(true);
-				if (ImGui::Button("< Undo", ImVec2(_w50, _h)))
+				if (ImGui::Button("< Undo", ImVec2(_w50, _h * 1.5f)))
 				{
 					doUndo();
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("Redo >", ImVec2(_w50, _h)))
+				if (ImGui::Button("Redo >", ImVec2(_w50, _h * 1.5f)))
 				{
 					doRedo();
 				}
 				ImGui::PopButtonRepeat();
 
-				ImGui::Spacing();
+				guiManager.AddSpacingBigSeparated();
 
-				string str;
-				str = "Group: " + params.getName();
-				ImGui::Text(str.c_str());
+				ImGuiTreeNodeFlags f = (guiManager.bMinimize ? ImGuiTreeNodeFlags_NoAutoOpenOnLog : ImGuiTreeNodeFlags_DefaultOpen);
+				if (ImGui::TreeNodeEx("MEMORY", f))
+				{
+					ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-				if (!bFilesMode) {
-					str = "History: " + ofToString(undo_StringParams.getUndoLength()) + "/";
-					str += ofToString(undo_StringParams.getRedoLength());
+					if (ImGui::Button("Store", ImVec2(_w50, _h)))
+					{
+						doStoreState();
+					}
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Recall", ImVec2(_w50, _h)))
+					{
+						doRecallState();
+					}
+
+					ImGui::TreePop();
 				}
-				if (bFilesMode) {
-					str = "History: " + ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
-					str += ofToString(undo_StringParamsFiles.getRedoLength());
+
+				if (!guiManager.bMinimize)
+				{
+					guiManager.AddSpacingBigSeparated();
+
+					string str;
+					str = "Group: " + params.getName();
+					ImGui::Text(str.c_str());
+
+					if (!bFilesMode) {
+						str = "History: " + ofToString(undo_StringParams.getUndoLength()) + "/";
+						str += ofToString(undo_StringParams.getRedoLength());
+					}
+					if (bFilesMode) {
+						str = "History: " + ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
+						str += ofToString(undo_StringParamsFiles.getRedoLength());
+					}
+					ImGui::Text(str.c_str());
+
+					guiManager.AddSpacingBigSeparated();
+
+					string label = (bFilesMode.get() ? "Files Mode" : "RAM Mode");
+					ofxImGuiSurfing::ToggleRoundedButton(label.c_str(), (bool*)&bFilesMode.get());
+					//ofxImGuiSurfing::AddToggleRoundedButton(bFilesMode);
+
+					ofxImGuiSurfing::AddToggleRoundedButton(bKeys);
 				}
-				ImGui::Text(str.c_str());
 
-				string label = (bFilesMode.get() ? "Files Mode" : "RAM Mode");
-				ofxImGuiSurfing::ToggleRoundedButton(label.c_str(), (bool*)&bFilesMode.get());
-				//ofxImGuiSurfing::AddToggleRoundedButton(bFilesMode);
-
-				ofxImGuiSurfing::AddToggleRoundedButton(bKeys);
+				guiManager.endWindow();
 			}
-		}
-		guiManager.endWindow();
 	}
 }
 
@@ -313,6 +353,15 @@ void ofxSurfingUndoHelper::keyPressed(ofKeyEventArgs& eventArgs) {
 
 	if (bGui_UndoEngine.get())
 	{
+		if (!mod_CONTROL && key == OF_KEY_RETURN || key == 13) // force store undo
+		{
+			doSaveUndo();
+		}
+		if (mod_CONTROL && key == OF_KEY_RETURN || key == 13) // force store undo
+		{
+			doSaveUndoWhenAuto();
+		}
+
 		if (!mod_SHIFT && mod_CONTROL && (key == 'z' || key == 26))// previous
 		{
 			doUndo();
@@ -321,15 +370,32 @@ void ofxSurfingUndoHelper::keyPressed(ofKeyEventArgs& eventArgs) {
 		{
 			doRedo();
 		}
-		else if (mod_SHIFT && mod_CONTROL && key == 'C' || key == 3)// clear
+		else if (!mod_SHIFT && mod_CONTROL && key == 'C' || key == 3)// clear
 		{
 			doClearUndoHistory();
 		}
+
 		else if (!mod_SHIFT && mod_CONTROL && key == 's' || key == 19)// store
 		{
-			doStoreUndo();
+			doStoreState();
+		}
+		else if (!mod_SHIFT && mod_CONTROL && key == 'r' || key == 18)// recall
+		{
+			doRecallState();
 		}
 	}
+}
+
+//--------------------------------------------------------------
+void ofxSurfingUndoHelper::doStoreState() {
+	ofLogNotice(__FUNCTION__);
+	ofxSurfingHelpers::saveGroup(params, path_MemoryState);
+}
+
+//--------------------------------------------------------------
+void ofxSurfingUndoHelper::doRecallState() {
+	ofLogNotice(__FUNCTION__);
+	ofxSurfingHelpers::loadGroup(params, path_MemoryState);
 }
 
 //--------------------------------------------------------------

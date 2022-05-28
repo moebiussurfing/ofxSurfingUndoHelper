@@ -48,28 +48,40 @@ void ofApp::draw()
 		{
 			// ofApp params fast editing to test Undo workflow
 			{
+				guiManager.AddLabelBig("Scene Tweak");
+
 				float w = ofxImGuiSurfing::getWidgetsWidth(1);
+				float w2 = ofxImGuiSurfing::getWidgetsWidth(2);
 				float h = 2 * ofxImGuiSurfing::getWidgetsHeightUnit();
-				if (ImGui::Button("RESET", ImVec2(w, h))) {
+				if (ImGui::Button("RESET", ImVec2(w2, h))) {
 					doReset();
 
 				}
-				if (ImGui::Button("RANDOM", ImVec2(w, h))) {
+				ImGui::SameLine();
+				if (ImGui::Button("RANDOM", ImVec2(w2, h))) {
 					doRandom();
 				}
 				guiManager.AddSpacingSeparated();
 			}
 
+			//--
+
 			// Show Undo Gui toggle
 			{
+				guiManager.AddLabelBig("Undo Helper");
 				guiManager.Add(undoManager.bGui_UndoEngine, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-				guiManager.AddSpacingBigSeparated();
+				guiManager.AddSpacingSeparated();
 			}
+
+			//--
 
 			// Params
 			{
+				guiManager.AddLabelBig("Scene Parameters");
 				guiManager.AddGroup(params);
 			}
+
+			//--
 
 			guiManager.endWindow();
 		}
@@ -92,13 +104,14 @@ void ofApp::draw()
 	helpInfo += "HELP  \n";
 	helpInfo += "ofApp \n";
 	helpInfo += "\n";
-	helpInfo += "SPACE     : RANDOM \n";
+	helpInfo += "SCENE TWEAK \n";
 	helpInfo += "BACKSPACE : RESET  \n";
+	helpInfo += "SPACE     : RANDOM \n";
 	helpInfo += "\n";
-	helpInfo += "-------------------\n";
+	helpInfo += "---------------------------------\n";
 	helpInfo += "\n";
 	helpInfo += undoManager.helpInfo;
-	ofDrawBitmapStringHighlight(helpInfo, ofGetWidth() - 250, 40);
+	ofDrawBitmapStringHighlight(helpInfo, ofGetWidth() - 280, 40);
 }
 
 //--------------------------------------------------------------
@@ -115,7 +128,7 @@ void ofApp::drawScene()
 
 		// alpha
 		float _a = ofMap(alpha, alpha.getMin(), alpha.getMax(), 0.1, 1);
-		ofSetColor(colorShape, 255  * _a);
+		ofSetColor(colorShape, 255 * _a);
 
 		// size
 		float _sz = 100 + size * 1.1;
@@ -186,7 +199,7 @@ void ofApp::doReset() {
 	surfingParamsRandom.doReset();
 	doChangeColor();
 
-	undoManager.doStoreUndoWhenAuto();
+	undoManager.doSaveUndoWhenAuto();
 }
 
 //--------------------------------------------------------------
@@ -195,9 +208,9 @@ void ofApp::doRandom() {
 	surfingParamsRandom.doRandom();
 	doChangeColor();
 
-	undoManager.doStoreUndoWhenAuto();
+	undoManager.doSaveUndoWhenAuto();
 	// Another method:
-	//undoManager.doStoreUndo(); // force store ignoring auto store toggle
+	//undoManager.doSaveUndo(); // force store ignoring auto store toggle
 }
 
 //--------------------------------------------------------------

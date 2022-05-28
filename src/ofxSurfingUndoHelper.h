@@ -2,6 +2,16 @@
 
 #include "ofMain.h"
 
+/*
+
+	TODO:
+
+	- Allow multiple independent groups.
+	- Add lite version without ImGui but ofxGui instead.
+
+*/
+
+
 // undo engine
 #include "ofxUndoSimple.h"
 #include "ofxSurfing_Files.h"
@@ -10,12 +20,9 @@
 
 #include "UndoHistory.h"
 
+
 class ofxSurfingUndoHelper
 {
-
-private:
-	
-	ofxSurfing_ImGui_Manager guiManager;
 
 public:
 	
@@ -40,6 +47,7 @@ public:
 private:
 
 	string path_Global = "";
+	string path_MemoryState;//there's a memory state to play with reset/random workflow
 	ofParameterGroup params{ "ofxSurfingUndoHelper" };
 	ofParameterGroup params_AppState{ "ofxSurfingUndoHelper_AppState" };
 
@@ -51,11 +59,6 @@ public:
 	ofParameter<bool> bAutoStore{ "Auto Store", true };
 	ofParameter<bool> bFilesMode{ "Files Mode", false };
 
-	void doStoreUndo();// store current point to undo history
-	void doStoreUndoWhenAuto() {
-		if (bAutoStore) doStoreUndo();
-	}; // store current point to undo history when auto mode is enabled
-
 private:
 
 	string path_UndoHistory;
@@ -65,13 +68,26 @@ private:
 	
 	ofXml undoXmlsParams;
 
+	void setupUndo();
 	void doRefreshUndoParams();
+
+public:
+
+	void doSaveUndo(); // Force store current point to undo history
+	void doSaveUndoWhenAuto() {// Store current point to undo history, but ONLY when auto mode is enabled.
+		if (bAutoStore) doSaveUndo();
+	}; 
+	
 	void doUndo();
 	void doRedo();
 	void doClearUndoHistory();
-	void setupUndo();
+
+	void doStoreState();//save the memory state
+	void doRecallState();//load the memory state
 
 	ofParameter<bool> bKeys{ "Keys", true };
+
+private:
 
 	void exit();
 
@@ -95,4 +111,7 @@ private:
 	//save/load history
 	UndoHistory undo_StringParamsFiles;
 
+private:
+
+	ofxSurfing_ImGui_Manager guiManager;
 };

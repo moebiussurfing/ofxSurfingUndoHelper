@@ -3,9 +3,12 @@
 #########################
 
 ##-------------------------------
-
+*.ini
+*.txt
 *.ps1
 *.bat
+*.xml
+*.json
 
 ## can exclude some sttings files
 
@@ -553,3 +556,47 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_36872.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_35957.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_35676.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_35436.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_35077.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_34416.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_34197.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_33797.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_33157.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_32697.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_31597.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_31277.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_30964.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_30657.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_30417.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_30077.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_29797.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_29237.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_28917.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_28397.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_27997.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_27417.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_27157.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_26877.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_26537.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_26020.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_25457.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_25177.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_24737.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_24417.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_24117.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_23857.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_23597.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_11497.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_11278.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_11058.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_07578.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_06638.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_06398.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_06138.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_05938.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_05678.txt
+example-Undo/bin/data/UndoHistory_Log/20220527_0412_05418.txt
+*.txt
