@@ -97,8 +97,8 @@ public:
 	
 	string helpInfo;
 
-//public:
 private:
+//public:
 
 	//TODO: save/load history
 	void loadUndoHist();
