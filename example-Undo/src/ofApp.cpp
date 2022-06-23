@@ -11,6 +11,7 @@ void ofApp::setup()
 	params.add(round.set("round", 0.5, 0, 1));
 	params.add(rotation.set("rotation", 180, 0, 360));
 
+	// Scene Colors
 	colors.push_back(ofColor::red);
 	colors.push_back(ofColor::green);
 	colors.push_back(ofColor::blue);
@@ -176,13 +177,13 @@ void ofApp::keyPressed(ofKeyEventArgs& eventArgs) {
 
 	ofLogNotice(__FUNCTION__) << " : " << key;
 
-	// reset
+	// Reset
 	if (key == OF_KEY_BACKSPACE)
 	{
 		doReset();
 	}
 
-	// randomize
+	// Randomize
 	if (key == ' ')
 	{
 		doRandom();
