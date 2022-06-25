@@ -28,7 +28,8 @@ ofxSurfingUndoHelper::~ofxSurfingUndoHelper() {
 }
 
 //--------------------------------------------------------------
-void ofxSurfingUndoHelper::setup(ofParameterGroup& g) {
+void ofxSurfingUndoHelper::setup(ofParameterGroup& g)
+{
 	params = g;
 	path_UndoHistory = path_Global + "UndoHelper_UndoHistory.xml"; // -> TODO:
 	path_AppState = path_Global + "UndoHelper_AppSession.json";
@@ -49,6 +50,7 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup& g) {
 	//-
 
 	guiManager.bMinimize = false;
+	guiManager.setName("UndoHelper");
 
 	guiManager.setup(IM_GUI_MODE_NOT_INSTANTIATED);
 
@@ -188,7 +190,7 @@ void ofxSurfingUndoHelper::doRefreshUndoParams() {
 }
 
 //--------------------------------------------------------------
-void ofxSurfingUndoHelper::drawImGui() {
+void ofxSurfingUndoHelper::drawImGuiWindow() {
 
 	if (!bGui_UndoEngine.get()) return;
 
@@ -201,101 +203,104 @@ void ofxSurfingUndoHelper::drawImGui() {
 		ImGuiColorEditFlags _flagc;
 
 		// widgets sizes
-		float _w100;
-		float _w50;
-		float _w33;
-		float _w25;
+		float _w1;
+		float _w2;
+		float _w3;
+		float _w4;
 		float _h;
 
 		_flagsw = ImGuiWindowFlags_None;
 		_flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
-		IMGUI_SUGAR__WINDOWS_CONSTRAINTS
+		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW
 
 			if (guiManager.beginWindow(bGui_UndoEngine, _flagsw))
 			{
-				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
-				_h *= 2;
+				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w1, _w2, _w3, _w4, _h);
 
 				guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_ROUNDED);
-				guiManager.AddSpacingBig();
+				guiManager.Add(bKeys, OFX_IM_TOGGLE_ROUNDED);
 
-				if (!guiManager.bMinimize) {
-					guiManager.Add(bAutoStore, OFX_IM_TOGGLE_BORDER_BLINK);
-					guiManager.AddSpacing();
+				guiManager.AddSpacingSeparated();
 
-					if (ImGui::Button("Save", ImVec2(_w50, _h * 0.5f)))
-					{
-						doSaveUndo();
-					}
-					ImGui::SameLine();
-					if (ImGui::Button("Clear", ImVec2(_w50, _h * 0.5f)))
-					{
-						doClearUndoHistory();
-					}
+				//--
 
-					guiManager.AddSpacing();
-				}
+				// Undo / Redo
 
 				ImGui::PushButtonRepeat(true);
-				if (ImGui::Button("< Undo", ImVec2(_w50, _h * 1.5f)))
+				if (ImGui::Button("< UNDO", ImVec2(_w2, _h * 1.25f)))
 				{
 					doUndo();
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("Redo >", ImVec2(_w50, _h * 1.5f)))
+				if (ImGui::Button("REDO >", ImVec2(_w2, _h * 1.25f)))
 				{
 					doRedo();
 				}
 				ImGui::PopButtonRepeat();
 
-				guiManager.AddSpacingBigSeparated();
+				//--
 
-				ImGuiTreeNodeFlags f = (guiManager.bMinimize ? ImGuiTreeNodeFlags_NoAutoOpenOnLog : ImGuiTreeNodeFlags_DefaultOpen);
-				if (ImGui::TreeNodeEx("MEMORY", f))
+				if (!guiManager.bMinimize)
 				{
-					ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+					guiManager.AddSpacingSeparated();
 
-					if (ImGui::Button("Store", ImVec2(_w50, _h)))
+					if (ImGui::Button("Save", ImVec2(_w2, _h)))
 					{
-						doStoreState();
+						doSaveUndo();
 					}
-
 					ImGui::SameLine();
-
-					if (ImGui::Button("Recall", ImVec2(_w50, _h)))
+					if (ImGui::Button("Clear", ImVec2(_w2, _h)))
 					{
-						doRecallState();
+						doClearUndoHistory();
 					}
 
-					ImGui::TreePop();
+					guiManager.AddSpacing();
+
+					guiManager.Add(bAutoStore, OFX_IM_TOGGLE_BORDER_BLINK);
+
+					guiManager.AddSpacing();
 				}
 
 				if (!guiManager.bMinimize)
 				{
-					guiManager.AddSpacingBigSeparated();
+					guiManager.AddSpacingSeparated();
 
-					string str;
-					str = "Group: " + params.getName();
-					ImGui::Text(str.c_str());
+					ImGuiTreeNodeFlags f = (guiManager.bMinimize ? ImGuiTreeNodeFlags_None : ImGuiTreeNodeFlags_DefaultOpen);
+					//ImGuiTreeNodeFlags f = (guiManager.bMinimize ? ImGuiTreeNodeFlags_NoAutoOpenOnLog : ImGuiTreeNodeFlags_DefaultOpen);
+					f |= ImGuiTreeNodeFlags_Framed;
 
-					if (!bFilesMode) {
-						str = "History: " + ofToString(undo_StringParams.getUndoLength()) + "/";
-						str += ofToString(undo_StringParams.getRedoLength());
+					if (ImGui::TreeNodeEx("MEMORY", f))
+					{
+						guiManager.refreshLayout();
+						ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w1, _w2, _w3, _w4, _h);
+
+						if (ImGui::Button("Store", ImVec2(_w2, _h)))
+						{
+							doStoreState();
+						}
+
+						ImGui::SameLine();
+
+						if (ImGui::Button("Recall", ImVec2(_w2, _h)))
+						{
+							doRecallState();
+						}
+
+						ImGui::TreePop();
 					}
-					if (bFilesMode) {
-						str = "History: " + ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
-						str += ofToString(undo_StringParamsFiles.getRedoLength());
-					}
-					ImGui::Text(str.c_str());
+				}
 
-					guiManager.AddSpacingBigSeparated();
+				guiManager.AddSpacingSeparated();
 
-					string label = (bFilesMode.get() ? "Files Mode" : "RAM Mode");
+				drawImGuiWidgetsHistoryInfo();
+
+				if (!guiManager.bMinimize)
+				{
+					guiManager.AddSpacingSeparated();
+
+					string label = (bFilesMode.get() ? "Mode Files" : "Mode RAM");
 					ofxImGuiSurfing::ToggleRoundedButton(label.c_str(), (bool*)&bFilesMode.get());
-					//ofxImGuiSurfing::AddToggleRoundedButton(bFilesMode);
-
-					ofxImGuiSurfing::AddToggleRoundedButton(bKeys);
 				}
 
 				guiManager.endWindow();

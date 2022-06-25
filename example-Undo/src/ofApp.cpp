@@ -3,9 +3,30 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	// Parameters
+	setupScene();
 
-	params.setName("theParamsGroup");
+	// Randomizer
+	// editing to test Undo workflow
+	surfingParamsRandom.setup(params);
+	surfingParamsRandom.doReset();
+
+	//--
+
+	// Undo Engine
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
+	undoManager.setup(params);
+#endif
+
+	//--
+
+	setupGui();
+}
+
+//--------------------------------------------------------------
+void ofApp::setupScene()
+{
+	// Scene Parameters
+	params.setName("myScene");
 	params.add(alpha.set("alpha", 0.5f, 0, 1.0f));
 	params.add(colorShape.set("Color", ofColor(0), ofColor(0), ofColor(255)));
 	params.add(size.set("size", ofGetWidth() / 2, 10, (int)ofGetHeight() / 2));
@@ -13,7 +34,6 @@ void ofApp::setup()
 	params.add(rotation.set("rotation", 180, 0, 360));
 
 	// Scene Colors
-
 	colors.push_back(ofColor::red);
 	colors.push_back(ofColor::green);
 	colors.push_back(ofColor::blue);
@@ -23,27 +43,12 @@ void ofApp::setup()
 	colors.push_back(ofColor::cornflowerBlue);
 	colors.push_back(ofColor::greenYellow);
 	colors.push_back(ofColor::mediumSeaGreen);
+}
 
-	//--
-
-	// Randomizer
-	// editing to test Undo workflow
-
-#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
-	surfingParamsRandom.setup(params);
-#endif
-
-	surfingParamsRandom.doReset();
-
-	//--
-
-	// Gui
+//--------------------------------------------------------------
+void ofApp::setupGui()
+{
 	guiManager.setup();
-
-	//--
-
-	// Undo Manager
-	undoManager.setup(params);
 
 	//--
 
@@ -71,7 +76,8 @@ void ofApp::setup()
 		helpInfo += "---------------------------------\n";
 		helpInfo += "\n";
 
-#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
+		// Undo Engine
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
 		helpInfo += undoManager.helpInfo;
 #endif
 
@@ -82,46 +88,78 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+	drawGui();
+
+	//--
+
+	drawScene();
+}
+
+//--------------------------------------------------------------
+void ofApp::drawGui()
+{
 	guiManager.begin();
 	{
+		// Useful widgets to integraste our GUI
+		if (guiManager.beginWindow("WIDGETS"))
+		{
+			guiManager.AddLabelBig("Useful widgets");
+			guiManager.Add(guiManager.bMinimize);
+			guiManager.AddSpacingBigSeparated();
+
+			undoManager.drawImGuiWidgetsBrowse(guiManager.bMinimize);
+			
+			guiManager.AddSpacingBigSeparated();
+			
+			undoManager.drawImGuiWidgetsHistoryInfo(guiManager.bMinimize);
+
+			guiManager.endWindow();
+		}
+
+		//--
+
+		// ofApp params fast editing to test Undo workflow
 		if (guiManager.beginWindow(bGui))
 		{
-			// ofApp params fast editing to test Undo workflow
 			{
 				guiManager.AddLabelBig("Scene Tweak");
 
-				float w = ofxImGuiSurfing::getWidgetsWidth(1);
-				float w2 = ofxImGuiSurfing::getWidgetsWidth(2);
-				float h = 2 * ofxImGuiSurfing::getWidgetsHeightUnit();
+				float _w1 = getWidgetsWidth(1);
+				float _w2 = getWidgetsWidth(2);
+				float _h2 = 2 * getWidgetsHeightUnit();
 
-				if (ImGui::Button("RESET", ImVec2(w2, h))) {
+				if (ImGui::Button("RESET", ImVec2(_w2, _h2)))
+				{
 					doReset();
-
 				}
+
 				ImGui::SameLine();
-				if (ImGui::Button("RANDOM", ImVec2(w2, h))) {
+				
+				if (ImGui::Button("RANDOM", ImVec2(_w2, _h2))) 
+				{
 					doRandom();
 				}
+
 				guiManager.AddSpacingSeparated();
 			}
 
 			//--
 
-			// Show Undo Gui toggle
-
-#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
+			// Show Undo show Gui toggle
+			// Undo Engine
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
 			{
 				guiManager.AddLabelBig("Undo Helper");
 				guiManager.Add(undoManager.bGui_UndoEngine, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 				guiManager.AddSpacingSeparated();
 			}
 #endif
-
 			//--
 
-			// Params
+			// -> The Params handled by the Undo Engine!
 			{
 				guiManager.AddLabelBig("Scene Parameters");
+
 				guiManager.AddGroup(params);
 			}
 
@@ -132,13 +170,14 @@ void ofApp::draw()
 
 		//--
 
-		undoManager.drawImGui();
+		// Undo Engine
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
+		undoManager.drawImGuiWindow();
+#endif
+
+		//--
 	}
 	guiManager.end();
-
-	//--
-
-	drawScene();
 
 	//--
 
@@ -221,32 +260,44 @@ void ofApp::keyPressed(ofKeyEventArgs& eventArgs) {
 
 	//--
 
-#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
+	// Undo Engine
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
 	undoManager.keyPressed(eventArgs);
 #endif
 }
 
-
+// Scene Helpers
 //--------------------------------------------------------------
-void ofApp::doReset() {
+void ofApp::doReset() 
+{
 	surfingParamsRandom.doReset();
 	doChangeColor();
 
+	//--
+
+	// Undo Engine
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
 	undoManager.doSaveUndoWhenAuto();
+#endif
 }
 
 //--------------------------------------------------------------
-void ofApp::doRandom() {
+void ofApp::doRandom() 
+{
 
 	surfingParamsRandom.doRandom();
 	doChangeColor();
 
 	//--
 
-#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
+	// Undo Engine
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
+	// Store states only if auto store enabled.
 	undoManager.doSaveUndoWhenAuto();
-	// Another method:
-	//undoManager.doSaveUndo(); // force store ignoring auto store toggle
+
+	// Alternative method:
+	// force store, ignoring auto store toggle.
+	//undoManager.doSaveUndo(); 
 #endif
 }
 
