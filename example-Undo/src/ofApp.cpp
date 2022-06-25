@@ -3,7 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	// Params
+	// Parameters
+
 	params.setName("theParamsGroup");
 	params.add(alpha.set("alpha", 0.5f, 0, 1.0f));
 	params.add(colorShape.set("Color", ofColor(0), ofColor(0), ofColor(255)));
@@ -12,6 +13,7 @@ void ofApp::setup()
 	params.add(rotation.set("rotation", 180, 0, 360));
 
 	// Scene Colors
+
 	colors.push_back(ofColor::red);
 	colors.push_back(ofColor::green);
 	colors.push_back(ofColor::blue);
@@ -26,7 +28,11 @@ void ofApp::setup()
 
 	// Randomizer
 	// editing to test Undo workflow
+
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
 	surfingParamsRandom.setup(params);
+#endif
+
 	surfingParamsRandom.doReset();
 
 	//--
@@ -38,6 +44,39 @@ void ofApp::setup()
 
 	// Undo Manager
 	undoManager.setup(params);
+
+	//--
+
+	// Help Info
+	{
+		textBoxWidget.setup();
+		textBoxWidget.setMode(TextBoxWidget::BOX_LAYOUT::TOP_RIGHT);
+
+		string helpInfo;
+		helpInfo = "";
+		helpInfo += "HELP  \n";
+		helpInfo += "ofApp \n";
+		helpInfo += "\n";
+		helpInfo += "HOW TO \n";
+		helpInfo += "\n";
+		helpInfo += "1. TWEAK SCENE to modify the parameters. \n";
+		helpInfo += "2. Browse the random Undo History. \n";
+		helpInfo += "\n";
+		helpInfo += "TWEAK SCENE \n";
+		helpInfo += "\n";
+		helpInfo += "BACKSPACE : RESET  \n";
+		helpInfo += "SPACE     : RANDOM \n";
+		helpInfo += "Each tweak trig change the color. \n";
+		helpInfo += "\n";
+		helpInfo += "---------------------------------\n";
+		helpInfo += "\n";
+
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
+		helpInfo += undoManager.helpInfo;
+#endif
+
+		textBoxWidget.setText(helpInfo);
+	}
 }
 
 //--------------------------------------------------------------
@@ -54,6 +93,7 @@ void ofApp::draw()
 				float w = ofxImGuiSurfing::getWidgetsWidth(1);
 				float w2 = ofxImGuiSurfing::getWidgetsWidth(2);
 				float h = 2 * ofxImGuiSurfing::getWidgetsHeightUnit();
+
 				if (ImGui::Button("RESET", ImVec2(w2, h))) {
 					doReset();
 
@@ -68,11 +108,14 @@ void ofApp::draw()
 			//--
 
 			// Show Undo Gui toggle
+
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
 			{
 				guiManager.AddLabelBig("Undo Helper");
 				guiManager.Add(undoManager.bGui_UndoEngine, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 				guiManager.AddSpacingSeparated();
 			}
+#endif
 
 			//--
 
@@ -99,20 +142,7 @@ void ofApp::draw()
 
 	//--
 
-	// Help Info
-	string helpInfo;
-	helpInfo = "";
-	helpInfo += "HELP  \n";
-	helpInfo += "ofApp \n";
-	helpInfo += "\n";
-	helpInfo += "SCENE TWEAK \n";
-	helpInfo += "BACKSPACE : RESET  \n";
-	helpInfo += "SPACE     : RANDOM \n";
-	helpInfo += "\n";
-	helpInfo += "---------------------------------\n";
-	helpInfo += "\n";
-	helpInfo += undoManager.helpInfo;
-	ofDrawBitmapStringHighlight(helpInfo, ofGetWidth() - 280, 40);
+	textBoxWidget.draw();
 }
 
 //--------------------------------------------------------------
@@ -191,7 +221,9 @@ void ofApp::keyPressed(ofKeyEventArgs& eventArgs) {
 
 	//--
 
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
 	undoManager.keyPressed(eventArgs);
+#endif
 }
 
 
@@ -209,9 +241,13 @@ void ofApp::doRandom() {
 	surfingParamsRandom.doRandom();
 	doChangeColor();
 
+	//--
+
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDEO_HELPER 
 	undoManager.doSaveUndoWhenAuto();
 	// Another method:
 	//undoManager.doSaveUndo(); // force store ignoring auto store toggle
+#endif
 }
 
 //--------------------------------------------------------------

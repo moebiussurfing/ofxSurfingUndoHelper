@@ -12,7 +12,8 @@
 */
 
 
-// undo engine
+// Undo Engine
+
 #include "ofxUndoSimple.h"
 #include "surfingFiles.h"
 #include "ofxSurfingImGui.h"

@@ -48,6 +48,8 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup& g) {
 
 	//-
 
+	guiManager.bMinimize = false;
+
 	guiManager.setup(IM_GUI_MODE_NOT_INSTANTIATED);
 
 	ofxSurfingHelpers::loadGroup(params_AppState, path_AppState);
@@ -221,19 +223,19 @@ void ofxSurfingUndoHelper::drawImGui() {
 				if (!guiManager.bMinimize) {
 					guiManager.Add(bAutoStore, OFX_IM_TOGGLE_BORDER_BLINK);
 					guiManager.AddSpacing();
-				}
 
-				if (ImGui::Button("Save", ImVec2(_w50, _h * 0.5f)))
-				{
-					doSaveUndo();
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Clear", ImVec2(_w50, _h * 0.5f)))
-				{
-					doClearUndoHistory();
-				}
+					if (ImGui::Button("Save", ImVec2(_w50, _h * 0.5f)))
+					{
+						doSaveUndo();
+					}
+					ImGui::SameLine();
+					if (ImGui::Button("Clear", ImVec2(_w50, _h * 0.5f)))
+					{
+						doClearUndoHistory();
+					}
 
-				guiManager.AddSpacing();
+					guiManager.AddSpacing();
+				}
 
 				ImGui::PushButtonRepeat(true);
 				if (ImGui::Button("< Undo", ImVec2(_w50, _h * 1.5f)))
