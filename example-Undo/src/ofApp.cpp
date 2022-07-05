@@ -14,6 +14,7 @@ void ofApp::setup()
 
 	// Undo Engine
 #ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
+	undoManager.setPathGlobal("ofApp/");
 	undoManager.setup(params);
 #endif
 
@@ -88,11 +89,11 @@ void ofApp::setupGui()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-	drawGui();
+	drawScene();
 
 	//--
 
-	drawScene();
+	drawGui();
 }
 
 //--------------------------------------------------------------
@@ -264,6 +265,14 @@ void ofApp::keyPressed(ofKeyEventArgs& eventArgs) {
 #ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
 	undoManager.keyPressed(eventArgs);
 #endif
+
+	//--
+
+	// Help
+	if (key == OF_KEY_TAB)
+	{
+		textBoxWidget.setToggleMode();
+	}
 }
 
 // Scene Helpers

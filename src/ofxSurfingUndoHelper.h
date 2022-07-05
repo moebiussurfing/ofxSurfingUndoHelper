@@ -56,6 +56,7 @@ public:
 		float _w1 = getWidgetsWidth(1);
 		float _w2 = getWidgetsWidth(2);
 		float _h = getWidgetsHeightUnit();
+		guiManager.refreshLayout();
 
 		if (bMinimal) {
 			_h *= 1.25f;
@@ -65,16 +66,40 @@ public:
 		}
 
 		ImGui::PushButtonRepeat(true);
-		if (ImGui::Button("< UNDO", ImVec2(_w2, _h)))
+		if (ImGui::Button("UNDO", ImVec2(_w2, _h)))
 		{
 			doUndo();
 		}
 		ImGui::SameLine();
-		if (ImGui::Button("REDO >", ImVec2(_w2, _h)))
+		if (ImGui::Button("REDO", ImVec2(_w2, _h)))
 		{
 			doRedo();
 		}
 		ImGui::PopButtonRepeat();
+		
+		//--
+
+		if (ImGui::Button("ADD", ImVec2(_w2, _h)))
+		{
+			doAddStateToUndo();
+		}
+		ImGui::SameLine();
+		ofxImGuiSurfing::AddBigToggle(bAutoAddStatesToUndo, _w2, _h, true, true);
+
+		//if (ImGui::Button("CLEAR", ImVec2(_w2, _h)))
+		//{
+		//	doClearUndoHistory();
+		//}
+
+		//if (ImGui::Button("STORE", ImVec2(_w2, _h)))
+		//{
+		//	doStoreState();
+		//}
+		//ImGui::SameLine();
+		//if (ImGui::Button("RECALL", ImVec2(_w2, _h)))
+		//{
+		//	doRecallState();
+		//}
 	}
 
 	//--------------------------------------------------------------
@@ -84,26 +109,33 @@ public:
 
 		string str;
 
-		if (bMinimal) {
-			if (!bFilesMode) {
+		if (bMinimal) 
+		{
+			if (!bFilesMode) 
+			{
 				str = ofToString(undo_StringParams.getUndoLength()) + "/";
 				str += ofToString(undo_StringParams.getRedoLength());
 			}
-			else {
+			else 
+			{
 				str = ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
 				str += ofToString(undo_StringParamsFiles.getRedoLength());
 			}
 			ImGui::Text(str.c_str());
 		}
-		else {
-			str = "Group " + params.getName();
+		else 
+		{
+			//str = "Group " + params.getName();
+			str = params.getName();
 			ImGui::Text(str.c_str());
 
-			if (!bFilesMode) {
+			if (!bFilesMode) 
+			{
 				str = "History " + ofToString(undo_StringParams.getUndoLength()) + "/";
 				str += ofToString(undo_StringParams.getRedoLength());
 			}
-			else {
+			else 
+			{
 				str = "History " + ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
 				str += ofToString(undo_StringParamsFiles.getRedoLength());
 			}
@@ -116,15 +148,15 @@ private:
 
 	string path_Global = "";
 	string path_MemoryState;//there's a memory state to play with reset/random workflow
-	ofParameterGroup params{ "ofxSurfingUndoHelper" };
-	ofParameterGroup params_AppState{ "ofxSurfingUndoHelper_AppState" };
+	ofParameterGroup params{ "UndoHelper" };
+	ofParameterGroup params_AppState{ "UndoHelper_AppState" };
 
 	//--
 
 public:
 
 	ofParameter<bool> bGui_UndoEngine{ "UNDO ENGINE", false };
-	ofParameter<bool> bAutoStore{ "Auto Store", true };
+	ofParameter<bool> bAutoAddStatesToUndo{ "AUTO ADD", true };
 	ofParameter<bool> bFilesMode{ "Files Mode", false };
 
 private:
@@ -141,9 +173,11 @@ private:
 
 public:
 
-	void doSaveUndo(); // Force store current point to undo history
+	void doAddStateToUndo(); // Force store current point to undo history
+	
+	//--------------------------------------------------------------
 	void doSaveUndoWhenAuto() {// Store current point to undo history, but ONLY when auto mode is enabled.
-		if (bAutoStore) doSaveUndo();
+		if (bAutoAddStatesToUndo) doAddStateToUndo();
 	};
 
 	void doUndo();

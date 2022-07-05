@@ -10,7 +10,7 @@ ofxSurfingUndoHelper::ofxSurfingUndoHelper() {
 	helpInfo += " \n";
 	helpInfo += "KEY COMMANDS \n";
 	helpInfo += "\n";
-	helpInfo += "AUTO STORE " + ofToString(bAutoStore ? "TRUE" : "FALSE") + " \n";
+	helpInfo += "AUTO STORE " + ofToString(bAutoAddStatesToUndo ? "TRUE" : "FALSE") + " \n";
 	helpInfo += "ENTER            : SAVE UNDO \n";
 	//helpInfo += "CTRL + ENTER     : SAVE UNDO IF AUTO\n";
 	helpInfo += "\n";
@@ -36,7 +36,7 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup& g)
 	path_MemoryState = path_Global + "UndoHelper_MemoryState.json";
 
 	params_AppState.add(bGui_UndoEngine);
-	params_AppState.add(bAutoStore);
+	params_AppState.add(bAutoAddStatesToUndo);
 	params_AppState.add(bFilesMode);
 	params_AppState.add(guiManager.bKeys);
 
@@ -66,6 +66,8 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup& g)
 
 //--------------------------------------------------------------
 void ofxSurfingUndoHelper::setupUndo() {
+	ofLogNotice(__FUNCTION__);
+
 	// TODO: main group only
 	//undoStringParams = groups[0].toString();
 
@@ -81,8 +83,10 @@ void ofxSurfingUndoHelper::setupUndo() {
 }
 
 //--------------------------------------------------------------
-void ofxSurfingUndoHelper::doSaveUndo() {
+void ofxSurfingUndoHelper::doAddStateToUndo() {
 	{
+		ofLogNotice(__FUNCTION__);
+
 		undoXmlsParams.clear();
 
 		ofParameterGroup _group = params;
@@ -208,6 +212,7 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 		float _w3;
 		float _w4;
 		float _h;
+		float _h2;
 
 		_flagsw = ImGuiWindowFlags_None;
 		_flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
@@ -224,16 +229,16 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 				guiManager.AddSpacingSeparated();
 
 				//--
-
+				_h2 = _h * 1.25f;
 				// Undo / Redo
 
 				ImGui::PushButtonRepeat(true);
-				if (ImGui::Button("< UNDO", ImVec2(_w2, _h * 1.25f)))
+				if (ImGui::Button("UNDO", ImVec2(_w2, _h2)))
 				{
 					doUndo();
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("REDO >", ImVec2(_w2, _h * 1.25f)))
+				if (ImGui::Button("REDO", ImVec2(_w2, _h2)))
 				{
 					doRedo();
 				}
@@ -243,23 +248,23 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 
 				if (!guiManager.bMinimize)
 				{
-					guiManager.AddSpacingSeparated();
+					//guiManager.AddSpacingSeparated();
 
-					if (ImGui::Button("Save", ImVec2(_w2, _h)))
+					if (ImGui::Button("ADD", ImVec2(_w2, _h2)))
 					{
-						doSaveUndo();
+						doAddStateToUndo();
 					}
 					ImGui::SameLine();
-					if (ImGui::Button("Clear", ImVec2(_w2, _h)))
+					if (ImGui::Button("CLEAR", ImVec2(_w2, _h2)))
 					{
 						doClearUndoHistory();
 					}
 
 					guiManager.AddSpacing();
 
-					guiManager.Add(bAutoStore, OFX_IM_TOGGLE_BORDER_BLINK);
+					guiManager.Add(bAutoAddStatesToUndo, OFX_IM_TOGGLE_BORDER_BLINK);
 
-					guiManager.AddSpacing();
+					//guiManager.AddSpacing();
 				}
 
 				if (!guiManager.bMinimize)
@@ -275,14 +280,12 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 						guiManager.refreshLayout();
 						ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w1, _w2, _w3, _w4, _h);
 
-						if (ImGui::Button("Store", ImVec2(_w2, _h)))
+						if (ImGui::Button("STORE", ImVec2(_w2, _h)))
 						{
 							doStoreState();
 						}
-
 						ImGui::SameLine();
-
-						if (ImGui::Button("Recall", ImVec2(_w2, _h)))
+						if (ImGui::Button("RECALL", ImVec2(_w2, _h)))
 						{
 							doRecallState();
 						}
@@ -362,7 +365,7 @@ void ofxSurfingUndoHelper::keyPressed(ofKeyEventArgs& eventArgs) {
 	{
 		if (!mod_CONTROL && key == OF_KEY_RETURN || key == 13) // force store undo
 		{
-			doSaveUndo();
+			doAddStateToUndo();
 		}
 		if (mod_CONTROL && key == OF_KEY_RETURN || key == 13) // force store undo
 		{
