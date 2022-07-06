@@ -53,10 +53,11 @@ public:
 	//--------------------------------------------------------------
 	void drawImGuiWidgetsBrowse(bool bMinimal = false)
 	{
+		guiManager.refreshLayout();
+
 		float _w1 = getWidgetsWidth(1);
 		float _w2 = getWidgetsWidth(2);
 		float _h = getWidgetsHeightUnit();
-		guiManager.refreshLayout();
 
 		if (bMinimal) {
 			_h *= 1.25f;
@@ -79,17 +80,20 @@ public:
 		
 		//--
 
-		if (ImGui::Button("ADD", ImVec2(_w2, _h)))
+		if (!bMinimal)
 		{
-			doAddStateToUndo();
-		}
-		ImGui::SameLine();
-		ofxImGuiSurfing::AddBigToggle(bAutoAddStatesToUndo, _w2, _h, true, true);
+			if (ImGui::Button("ADD", ImVec2(_w2, _h)))
+			{
+				doAddStateToUndo();
+			}
+			ImGui::SameLine();
+			ofxImGuiSurfing::AddBigToggle(bAutoAddStatesToUndo, _w2, _h, true, false);
 
-		//if (ImGui::Button("CLEAR", ImVec2(_w2, _h)))
-		//{
-		//	doClearUndoHistory();
-		//}
+			if (ImGui::Button("CLEAR", ImVec2(_w1, _h * 0.75f)))
+			{
+				doClearUndoHistory();
+			}
+		}
 
 		//if (ImGui::Button("STORE", ImVec2(_w2, _h)))
 		//{

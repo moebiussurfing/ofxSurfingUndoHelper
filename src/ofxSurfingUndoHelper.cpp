@@ -254,15 +254,19 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 					{
 						doAddStateToUndo();
 					}
+					guiManager.AddTooltip("Queue current state to Undo History.");
+
 					ImGui::SameLine();
 					if (ImGui::Button("CLEAR", ImVec2(_w2, _h2)))
 					{
 						doClearUndoHistory();
 					}
+					guiManager.AddTooltip("Clear all Undo History.");
 
 					guiManager.AddSpacing();
 
 					guiManager.Add(bAutoAddStatesToUndo, OFX_IM_TOGGLE_BORDER_BLINK);
+					guiManager.AddTooltip("Auto Queue states when a custom command (i.e. a randomize) is called.");
 
 					//guiManager.AddSpacing();
 				}
@@ -284,11 +288,14 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 						{
 							doStoreState();
 						}
+						guiManager.AddTooltip("Store current state to the MEMORY to easily Recall after some edits.");
+
 						ImGui::SameLine();
 						if (ImGui::Button("RECALL", ImVec2(_w2, _h)))
 						{
 							doRecallState();
 						}
+						guiManager.AddTooltip("Restore previously Stores state from the MEMORY and discard last edits.");
 
 						ImGui::TreePop();
 					}
@@ -304,6 +311,8 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 
 					string label = (bFilesMode.get() ? "Mode Files" : "Mode RAM");
 					ofxImGuiSurfing::ToggleRoundedButton(label.c_str(), (bool*)&bFilesMode.get());
+					if(bFilesMode)guiManager.AddTooltip("Mode Files handles history with files, \nthat are also persistent between App sessions.");
+					else guiManager.AddTooltip("Mode RAM handles history faster without using files. \nHistory is not persistent between App sessions.");
 				}
 
 				guiManager.endWindow();
