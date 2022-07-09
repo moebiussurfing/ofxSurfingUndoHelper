@@ -38,6 +38,7 @@ public:
 	//--------------------------------------------------------------
 	void setPathGlobal(string path) {
 		path_Global = path;
+		ofxSurfingHelpers::CheckFolder(path_Global);
 	}
 
 	//--------------------------------------------------------------
@@ -159,9 +160,13 @@ private:
 
 public:
 
+	bool isAutoAddMode() const {
+		return bAutoAddStatesToUndo.get();
+	}
+
 	ofParameter<bool> bGui_UndoEngine{ "UNDO ENGINE", false };
 	ofParameter<bool> bAutoAddStatesToUndo{ "AUTO ADD", true };
-	ofParameter<bool> bFilesMode{ "Files Mode", false };
+	ofParameter<bool> bFilesMode{ "Files Mode", true };//default is file mode. could be slow but resumen undo history between app sessions.
 
 private:
 

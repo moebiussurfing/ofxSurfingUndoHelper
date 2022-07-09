@@ -3,7 +3,9 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	setupScene();
+	setupParams();
+
+	//--
 
 	// Randomizer
 	// editing to test Undo workflow
@@ -12,19 +14,20 @@ void ofApp::setup()
 
 	//--
 
-	// Undo Engine
-#ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
-	undoManager.setPathGlobal("ofApp/");
-	undoManager.setup(params);
-#endif
+	// Gui
+	guiManager.setup();
 
 	//--
 
-	setupGui();
+	// Undo Engine
+	setupUndo();
+
+	// Help Info
+	buildHelp();
 }
 
 //--------------------------------------------------------------
-void ofApp::setupScene()
+void ofApp::setupParams()
 {
 	// Scene Parameters
 	params.setName("myScene");
@@ -47,43 +50,46 @@ void ofApp::setupScene()
 }
 
 //--------------------------------------------------------------
-void ofApp::setupGui()
+void ofApp::setupUndo()
 {
-	guiManager.setup();
-
-	//--
-
-	// Help Info
-	{
-		textBoxWidget.setup();
-		textBoxWidget.setMode(TextBoxWidget::BOX_LAYOUT::TOP_RIGHT);
-
-		string helpInfo;
-		helpInfo = "";
-		helpInfo += "HELP  \n";
-		helpInfo += "ofApp \n";
-		helpInfo += "\n";
-		helpInfo += "HOW TO \n";
-		helpInfo += "\n";
-		helpInfo += "1. TWEAK SCENE to modify the parameters. \n";
-		helpInfo += "2. Browse the random Undo History. \n";
-		helpInfo += "\n";
-		helpInfo += "TWEAK SCENE \n";
-		helpInfo += "\n";
-		helpInfo += "BACKSPACE : RESET  \n";
-		helpInfo += "SPACE     : RANDOM \n";
-		helpInfo += "Each tweak trig change the color. \n";
-		helpInfo += "\n";
-		helpInfo += "---------------------------------\n";
-		helpInfo += "\n";
-
-		// Undo Engine
 #ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
-		helpInfo += undoManager.helpInfo;
+	undoManager.setPathGlobal("ofApp_Undo/"); // -> Optional path settings customization
+	undoManager.setup(params);
+#endif
+}
+
+//--------------------------------------------------------------
+void ofApp::buildHelp()
+{
+	textBoxWidget.setPath("ofApp_Help/"); // -> Optional path settings customization
+	textBoxWidget.setup();
+	textBoxWidget.setMode(TextBoxWidget::BOX_LAYOUT::TOP_RIGHT);
+
+	string helpInfo;
+	helpInfo = "";
+	helpInfo += "HELP  \n";
+	helpInfo += "ofApp \n";
+	helpInfo += "\n";
+	helpInfo += "HOW TO \n";
+	helpInfo += "\n";
+	helpInfo += "1. TWEAK SCENE to modify the parameters. \n";
+	helpInfo += "2. Browse the random Undo History. \n";
+	helpInfo += "\n";
+	helpInfo += "TWEAK SCENE \n";
+	helpInfo += "\n";
+	helpInfo += "BACKSPACE : RESET  \n";
+	helpInfo += "SPACE     : RANDOM \n";
+	helpInfo += "Each tweak trig change the color. \n";
+	helpInfo += "\n";
+	helpInfo += "---------------------------------\n";
+	helpInfo += "\n";
+
+	// Undo Engine
+#ifdef USE__OFX_SURFING__OFX_SURFING_UNDO_HELPER 
+	helpInfo += undoManager.helpInfo;
 #endif
 
-		textBoxWidget.setText(helpInfo);
-	}
+	textBoxWidget.setText(helpInfo);
 }
 
 //--------------------------------------------------------------
@@ -101,17 +107,24 @@ void ofApp::drawGui()
 {
 	guiManager.begin();
 	{
-		// Useful widgets to integraste our GUI
+		// Useful widgets to integrate our GUI
 		if (guiManager.beginWindow("WIDGETS"))
 		{
 			guiManager.AddLabelBig("Useful widgets");
 			guiManager.Add(guiManager.bMinimize);
 			guiManager.AddSpacingBigSeparated();
 
-			undoManager.drawImGuiWidgetsBrowse(guiManager.bMinimize);
-			
+			//--
+
+			// Draw Widgets into an ofxSurfingImGui window
+			{
+				undoManager.drawImGuiWidgetsBrowse(guiManager.bMinimize);
+			}
+
+			//--
+
 			guiManager.AddSpacingBigSeparated();
-			
+
 			undoManager.drawImGuiWidgetsHistoryInfo(guiManager.bMinimize);
 
 			guiManager.endWindow();
@@ -135,8 +148,8 @@ void ofApp::drawGui()
 				}
 
 				ImGui::SameLine();
-				
-				if (ImGui::Button("RANDOM", ImVec2(_w2, _h2))) 
+
+				if (ImGui::Button("RANDOM", ImVec2(_w2, _h2)))
 				{
 					doRandom();
 				}
@@ -275,9 +288,9 @@ void ofApp::keyPressed(ofKeyEventArgs& eventArgs) {
 	}
 }
 
-// Scene Helpers
+// Scene easy tweak Helpers
 //--------------------------------------------------------------
-void ofApp::doReset() 
+void ofApp::doReset()
 {
 	surfingParamsRandom.doReset();
 	doChangeColor();
@@ -291,9 +304,8 @@ void ofApp::doReset()
 }
 
 //--------------------------------------------------------------
-void ofApp::doRandom() 
+void ofApp::doRandom()
 {
-
 	surfingParamsRandom.doRandom();
 	doChangeColor();
 

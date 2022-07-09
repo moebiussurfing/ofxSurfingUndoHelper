@@ -30,10 +30,15 @@ ofxSurfingUndoHelper::~ofxSurfingUndoHelper() {
 //--------------------------------------------------------------
 void ofxSurfingUndoHelper::setup(ofParameterGroup& g)
 {
-	params = g;
+	//if (path_Global == "") setPathGlobal(ofToDataPath("UndoHelper/")); // -> set a default path
+
+	ofxSurfingHelpers::CheckFolder(path_Global);
+
 	path_UndoHistory = path_Global + "UndoHelper_UndoHistory.xml"; // -> TODO:
 	path_AppState = path_Global + "UndoHelper_AppSession.json";
 	path_MemoryState = path_Global + "UndoHelper_MemoryState.json";
+
+	//--
 
 	params_AppState.add(bGui_UndoEngine);
 	params_AppState.add(bAutoAddStatesToUndo);
@@ -41,6 +46,10 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup& g)
 	params_AppState.add(guiManager.bKeys);
 
 	bKeys.makeReferenceTo(guiManager.bKeys);
+
+	//--
+	
+	params = g;
 
 	//--
 
@@ -54,13 +63,15 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup& g)
 
 	guiManager.setup(IM_GUI_MODE_NOT_INSTANTIATED);
 
+	//-
+
 	ofxSurfingHelpers::loadGroup(params_AppState, path_AppState);
 
 	//-
 
 	//TODO:
 	//files
-	undo_StringParamsFiles.setDirectory(path_Global + "UndoHelper_History_Log");
+	undo_StringParamsFiles.setDirectory(path_Global + "UndoHelper_FilesMode_History");
 	undo_StringParamsFiles.redo(undo_StringParamsFiles.getRedoLength());
 }
 
@@ -254,7 +265,7 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 					{
 						doAddStateToUndo();
 					}
-					guiManager.AddTooltip("Queue current state to Undo History.");
+					guiManager.AddTooltip("Manually queue current state to Undo History.");
 
 					ImGui::SameLine();
 					if (ImGui::Button("CLEAR", ImVec2(_w2, _h2)))
@@ -323,10 +334,13 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 //----
 
 //TODO:
-//store session files
+// store / recall session files.
 
 //--------------------------------------------------------------
-void ofxSurfingUndoHelper::loadUndoHist() {
+void ofxSurfingUndoHelper::loadUndoHist() 
+{
+	//TODO:
+	
 	//undo_StringParams.clear();
 	//undoXmlsParams.clear();
 	//undo_StringParams = params.toString();
@@ -336,11 +350,15 @@ void ofxSurfingUndoHelper::loadUndoHist() {
 }
 
 //--------------------------------------------------------------
-void ofxSurfingUndoHelper::saveUndoHist() {
+void ofxSurfingUndoHelper::saveUndoHist()
+{
+	/*
+	
 	ofLogNotice(__FUNCTION__) << path_UndoHistory;
 	//ofxSurfingHelpers::saveGroup();
 
 	//TODO:
+
 	string s = undo_StringParams;
 	//auto s = undo_StringParams.toString();
 	//auto s = undoXmlsParams.toString();
@@ -352,6 +370,8 @@ void ofxSurfingUndoHelper::saveUndoHist() {
 
 	//undo_StringParamsFiles.();
 	//undo_StringParamsFiles.store();
+	
+	*/
 }
 
 //--

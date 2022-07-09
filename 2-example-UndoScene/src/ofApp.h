@@ -38,12 +38,10 @@ public:
     void setup();
     void draw();	
 	void keyPressed(ofKeyEventArgs& eventArgs);
-    
-	void setupGui();	
-	void drawGui();	
-
-    void setupScene();
+    void setupParams();
+	void setupUndo();	
     void drawScene();
+	void drawGui();	
 
 	// Parameters
 	ofParameterGroup params;
@@ -71,6 +69,7 @@ public:
 	 
 	// Help info
 	TextBoxWidget textBoxWidget;
+	void buildHelp();
 
 	//--
 
