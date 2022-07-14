@@ -126,13 +126,13 @@ public:
 				str = ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
 				str += ofToString(undo_StringParamsFiles.getRedoLength());
 			}
-			ImGui::Text(str.c_str());
+			ImGui::Text("%s", str.c_str());
 		}
 		else 
 		{
 			//str = "Group " + params.getName();
 			str = params.getName();
-			ImGui::Text(str.c_str());
+			ImGui::Text("%s", str.c_str());
 
 			if (!bFilesMode) 
 			{
@@ -144,7 +144,7 @@ public:
 				str = "History " + ofToString(undo_StringParamsFiles.getUndoLength()) + "/";
 				str += ofToString(undo_StringParamsFiles.getRedoLength());
 			}
-			ImGui::Text(str.c_str());
+			ImGui::Text("%s", str.c_str());
 		}
 
 	}
