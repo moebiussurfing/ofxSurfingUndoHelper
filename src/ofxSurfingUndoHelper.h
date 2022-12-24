@@ -54,7 +54,7 @@ public:
 	//--------------------------------------------------------------
 	void drawImGuiWidgetsBrowse(bool bMinimal = false)
 	{
-		guiManager.refreshLayout();
+		ui.refreshLayout();
 
 		float _w1 = getWidgetsWidth(1);
 		float _w2 = getWidgetsWidth(2);
@@ -224,5 +224,5 @@ private:
 
 private:
 
-	ofxSurfing_ImGui_Manager guiManager;
+	ofxSurfingGui ui;
 };

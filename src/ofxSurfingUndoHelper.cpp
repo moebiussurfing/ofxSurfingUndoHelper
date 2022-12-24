@@ -43,9 +43,9 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup& g)
 	params_AppState.add(bGui_UndoEngine);
 	params_AppState.add(bAutoAddStatesToUndo);
 	params_AppState.add(bFilesMode);
-	params_AppState.add(guiManager.bKeys);
+	params_AppState.add(ui.bKeys);
 
-	bKeys.makeReferenceTo(guiManager.bKeys);
+	bKeys.makeReferenceTo(ui.bKeys);
 
 	//--
 	
@@ -58,10 +58,10 @@ void ofxSurfingUndoHelper::setup(ofParameterGroup& g)
 
 	//-
 
-	guiManager.bMinimize = false;
-	guiManager.setName("UndoHelper");
+	ui.bMinimize = false;
+	ui.setName("UndoHelper");
 
-	guiManager.setup(IM_GUI_MODE_NOT_INSTANTIATED);
+	ui.setup(IM_GUI_MODE_NOT_INSTANTIATED);
 
 	//-
 
@@ -230,14 +230,14 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 
 		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW
 
-			if (guiManager.beginWindow(bGui_UndoEngine, _flagsw))
+			if (ui.BeginWindow(bGui_UndoEngine, _flagsw))
 			{
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w1, _w2, _w3, _w4, _h);
 
-				guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_ROUNDED);
-				guiManager.Add(bKeys, OFX_IM_TOGGLE_ROUNDED);
+				ui.Add(ui.bMinimize, OFX_IM_TOGGLE_ROUNDED);
+				ui.Add(bKeys, OFX_IM_TOGGLE_ROUNDED);
 
-				guiManager.AddSpacingSeparated();
+				ui.AddSpacingSeparated();
 
 				//--
 				_h2 = _h * 1.25f;
@@ -257,76 +257,76 @@ void ofxSurfingUndoHelper::drawImGuiWindow() {
 
 				//--
 
-				if (!guiManager.bMinimize)
+				if (!ui.bMinimize)
 				{
-					//guiManager.AddSpacingSeparated();
+					//ui.AddSpacingSeparated();
 
 					if (ImGui::Button("ADD", ImVec2(_w2, _h2)))
 					{
 						doAddStateToUndo();
 					}
-					guiManager.AddTooltip("Manually queue current state to Undo History.");
+					ui.AddTooltip("Manually queue current state to Undo History.");
 
 					ImGui::SameLine();
 					if (ImGui::Button("CLEAR", ImVec2(_w2, _h2)))
 					{
 						doClearUndoHistory();
 					}
-					guiManager.AddTooltip("Clear all Undo History.");
+					ui.AddTooltip("Clear all Undo History.");
 
-					guiManager.AddSpacing();
+					ui.AddSpacing();
 
-					guiManager.Add(bAutoAddStatesToUndo, OFX_IM_TOGGLE_BORDER_BLINK);
-					guiManager.AddTooltip("Auto Queue states when a custom command (i.e. a randomize) is called.");
+					ui.Add(bAutoAddStatesToUndo, OFX_IM_TOGGLE_BORDER_BLINK);
+					ui.AddTooltip("Auto Queue states when a custom command (i.e. a randomize) is called.");
 
-					//guiManager.AddSpacing();
+					//ui.AddSpacing();
 				}
 
-				if (!guiManager.bMinimize)
+				if (!ui.bMinimize)
 				{
-					guiManager.AddSpacingSeparated();
+					ui.AddSpacingSeparated();
 
-					ImGuiTreeNodeFlags f = (guiManager.bMinimize ? ImGuiTreeNodeFlags_None : ImGuiTreeNodeFlags_DefaultOpen);
-					//ImGuiTreeNodeFlags f = (guiManager.bMinimize ? ImGuiTreeNodeFlags_NoAutoOpenOnLog : ImGuiTreeNodeFlags_DefaultOpen);
+					ImGuiTreeNodeFlags f = (ui.bMinimize ? ImGuiTreeNodeFlags_None : ImGuiTreeNodeFlags_DefaultOpen);
+					//ImGuiTreeNodeFlags f = (ui.bMinimize ? ImGuiTreeNodeFlags_NoAutoOpenOnLog : ImGuiTreeNodeFlags_DefaultOpen);
 					f |= ImGuiTreeNodeFlags_Framed;
 
 					if (ImGui::TreeNodeEx("MEMORY", f))
 					{
-						guiManager.refreshLayout();
+						ui.refreshLayout();
 						ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w1, _w2, _w3, _w4, _h);
 
 						if (ImGui::Button("STORE", ImVec2(_w2, _h)))
 						{
 							doStoreState();
 						}
-						guiManager.AddTooltip("Store current state to the MEMORY to easily Recall after some edits.");
+						ui.AddTooltip("Store current state to the MEMORY to easily Recall after some edits.");
 
 						ImGui::SameLine();
 						if (ImGui::Button("RECALL", ImVec2(_w2, _h)))
 						{
 							doRecallState();
 						}
-						guiManager.AddTooltip("Restore previously Stores state from the MEMORY and discard last edits.");
+						ui.AddTooltip("Restore previously Stores state from the MEMORY and discard last edits.");
 
 						ImGui::TreePop();
 					}
 				}
 
-				guiManager.AddSpacingSeparated();
+				ui.AddSpacingSeparated();
 
 				drawImGuiWidgetsHistoryInfo();
 
-				if (!guiManager.bMinimize)
+				if (!ui.bMinimize)
 				{
-					guiManager.AddSpacingSeparated();
+					ui.AddSpacingSeparated();
 
 					string label = (bFilesMode.get() ? "Mode Files" : "Mode RAM");
 					ofxImGuiSurfing::ToggleRoundedButton(label.c_str(), (bool*)&bFilesMode.get());
-					if(bFilesMode)guiManager.AddTooltip("Mode Files handles history with files, \nthat are also persistent between App sessions.");
-					else guiManager.AddTooltip("Mode RAM handles history faster without using files. \nHistory is not persistent between App sessions.");
+					if(bFilesMode)ui.AddTooltip("Mode Files handles history with files, \nthat are also persistent between App sessions.");
+					else ui.AddTooltip("Mode RAM handles history faster without using files. \nHistory is not persistent between App sessions.");
 				}
 
-				guiManager.endWindow();
+				ui.EndWindow();
 			}
 	}
 }
